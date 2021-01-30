@@ -22,11 +22,44 @@ var clubOrder = {
     guitar: 4
 };
 
+// logMe function to display Student information
+Student.prototype.logMe = function(club) {
+    if (club) {
+        console.log(this.name + " - " + this.major + " - " + this.yearInSchool + " - " + this.club);
+    } else {
+        console.log(this.name + " - " + this.major + " - " + this.yearInSchool);
+    }
+}
+
+// logs the sorted array to the console
+function logArray(array, sortType) {
+    console.log("**********")
+    console.log("The students sorted by " + sortType + " are:");
+    if (sortType === "club affiliation") {
+        array.forEach(function (student) {
+            student.logMe(true);
+        })
+    } else {
+        array.forEach(function (student) {
+            student.logMe(false);
+        });
+    }
+}
+
 /* This function sorts arrays using an arbitrary comparator. You pass it a comparator
 and an array of objects appropriate for that comparator and it will return a new array
 which is sorted with the largest object in index 0 and the smallest in the last index*/
 function sortArr(comparator, array) {
-    // your code here
+    for (var i = 1; i < array.length; i++) {
+        var check = i;
+        var item = array[check];
+
+        while (check > 0 && (comparator(item, array[check - 1]) ) ) {
+            array[check] = array[check - 1];
+            array[check - 1] = item;
+            check -= 1;
+        }
+    }
 }
 
 /* A comparator takes two arguments and uses some algorithm to compare them. If the first
@@ -52,9 +85,9 @@ function yearComparator(student1, student2) {
 makes which are alphabetically earlier in the alphabet are "greater" than ones that
 come later (from A-Z).*/
 function majorComparator(student1, student2) {
-    var lowerName1 = student1.name.toLowerCase();
-    var lowerName2 = student2.name.toLowerCase();
-    return lowerName1 < lowerName2;
+    var lowerMajor1 = student1.major.toLowerCase();
+    var lowerMajor2 = student2.major.toLowerCase();
+    return lowerMajor1 < lowerMajor2;
 }
 
 /* This compares two students based on the club they're in. The ordering from "greatest"
@@ -66,7 +99,7 @@ function clubComparator(student1, student2) {
     var student2Club = student2.club.toLowerCase();
     if (clubOrder[student1Club] < clubOrder[student2Club]) {    //check know club order
         return true;
-    } else if (student1Club === student2Club) {                 //check if clubs are same
+    } else if (student1Club === student2Club || (!(student1Club in clubOrder) && !(student2Club in clubOrder))) { //check if clubs are same
         return student1.yearInSchool > student2.yearInSchool;   //compare years in school
     } else {
         return student1Club in clubOrder && !(student2Club in clubOrder); //check if student clubs in club order
@@ -105,3 +138,12 @@ As an example of what is expected to be printed to the console with logMe being 
 Jim - Sports Science - 2 - Guitar
 
 */
+
+sortArr(yearComparator, students);
+logArray(students, "year");
+sortArr(majorComparator, students);
+logArray(students, "major");
+sortArr(clubComparator, students);
+logArray(students, "club affiliation");
+console.log("**********")
+
